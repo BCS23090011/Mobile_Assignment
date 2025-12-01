@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LocalProduceMarketLocator.ViewModels"
+             x:Class="LocalProduceMarketLocator.Views.RegisterPage"
+             x:DataType="viewmodel:RegisterViewModel"
+             Title="Register">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center">
+
+            <Image Source="appicon.png"
+                   WidthRequest="120"
+                   HeightRequest="120"
+                   HorizontalOptions="Center"
+                   Margin="0,20,0,0" />
+
+            
+            <Label Text="Create Account" 
+                   FontSize="28" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center"
+                   TextColor="#2E7D32" />
+
+            <Entry Text="{Binding DisplayName}" 
+                   Placeholder="Display Name" 
+                   IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" />
+
+            <Entry Text="{Binding Email}" 
+                   Placeholder="Email" 
+                   Keyboard="Email"
+                   IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" />
+
+            <Entry Text="{Binding Password}" 
+                   Placeholder="Password" 
+                   IsPassword="True"
+                   IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" />
+
+            <Entry Text="{Binding ConfirmPassword}" 
+                   Placeholder="Confirm Password" 
+                   IsPassword="True"
+                   IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" />
+
+            <Label Text="{Binding ErrorMessage}" 
+                   TextColor="Red" 
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
+
+            <Button Text="Register" 
+                    Command="{Binding RegisterCommand}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
+                    BackgroundColor="#2E7D32"
+                    TextColor="White" />
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                               IsVisible="{Binding IsLoading}" />
+
+            <Button Text="Already have an account? Login" 
+                    Command="{Binding NavigateToLoginCommand}"
+                    TextColor="#2E7D32"
+                    BackgroundColor="Transparent" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
+
+

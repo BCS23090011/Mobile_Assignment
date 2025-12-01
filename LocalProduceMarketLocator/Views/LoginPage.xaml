@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LocalProduceMarketLocator.ViewModels"
+             x:Class="LocalProduceMarketLocator.Views.LoginPage"
+             x:DataType="viewmodel:LoginViewModel"
+             Title="Login"
+             BackgroundColor="#F5F5F5">
+
+    <!-- Main Content -->
+    <ScrollView Grid.Row="1">
+        <VerticalStackLayout Padding="20" 
+                               Spacing="30" 
+                               VerticalOptions="Center">
+
+            <!-- Logo - Location Pin with Leaf -->
+            <Image Source="appicon.png"
+                   WidthRequest="120"
+                   HeightRequest="120"
+                   HorizontalOptions="Center"
+                   Margin="0,20,0,0" />
+
+            <!-- Input Card -->
+            <Border BackgroundColor="White"
+                        StrokeThickness="0"
+                        Padding="20,25"
+                        Margin="0,20,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="20">
+                    <!-- Email Input -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Email"
+                                   FontSize="14"
+                                   TextColor="Black"
+                                   FontAttributes="Bold" />
+                        <Border StrokeThickness="1"
+                                    Stroke="{StaticResource Green}"
+                                    BackgroundColor="White">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Entry Text="{Binding Email}" 
+                                       Placeholder="Email"
+                                       Keyboard="Email"
+                                       BackgroundColor="Transparent"
+                                       TextColor="Black"
+                                       PlaceholderColor="Gray"
+                                       IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
+                                       Margin="10,0" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Password Input -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Password"
+                                   FontSize="14"
+                                   TextColor="Black"
+                                   FontAttributes="Bold" />
+                        <Border StrokeThickness="1"
+                                    Stroke="{StaticResource Green}"
+                                    BackgroundColor="White">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Entry Text="{Binding Password}" 
+                                       Placeholder="Password"
+                                       IsPassword="True"
+                                       BackgroundColor="Transparent"
+                                       TextColor="Black"
+                                       PlaceholderColor="Gray"
+                                       IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
+                                       Margin="10,0" />
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Error Message Box -->
+            <Border BackgroundColor="White"
+                        StrokeThickness="1"
+                        Stroke="#D32F2F"
+                        Padding="15"
+                        IsVisible="{Binding ErrorMessage, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+                        Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <Label Text="{Binding ErrorMessage}"
+                           TextColor="#D32F2F"
+                           FontSize="14"
+                           HorizontalOptions="Center" />
+            </Border>
+
+            <!-- Success Message Box -->
+            <Border BackgroundColor="{StaticResource SuccessGreen}"
+                        StrokeThickness="1"
+                        Stroke="{StaticResource Green}"
+                        Padding="15"
+                        IsVisible="{Binding SuccessMessage, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+                        Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <Label Text="{Binding SuccessMessage}"
+                           TextColor="{StaticResource Green}"
+                           FontSize="14"
+                           HorizontalOptions="Center" />
+            </Border>
+
+            <!-- Buttons -->
+            <VerticalStackLayout Spacing="15" Margin="0,20,0,0">
+
+                <!-- LOG IN Button -->
+                <Button Text="LOG IN"
+                            Command="{Binding LoginCommand}"
+                            BackgroundColor="White"
+                            TextColor="{StaticResource Green}"
+                            BorderColor="{StaticResource Green}"
+                            BorderWidth="1"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            HeightRequest="50"
+                            IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" />
+            </VerticalStackLayout>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                                   IsVisible="{Binding IsLoading}"
+                                   Color="{StaticResource Green}"
+                                   Margin="0,10,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

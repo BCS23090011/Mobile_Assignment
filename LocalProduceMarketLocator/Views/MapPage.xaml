@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:LocalProduceMarketLocator.ViewModels"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             xmlns:models="clr-namespace:LocalProduceMarketLocator.Models"
+             x:Class="LocalProduceMarketLocator.Views.MapPage"
+             x:DataType="viewmodel:MapViewModel"
+             Title="Map"
+             BackgroundColor="White"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Grid BackgroundColor="{StaticResource Green}" 
+              Padding="20,15"
+              RowDefinitions="Auto">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="1"
+                   Text="Sustain Market"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <maps:Map x:Name="MarketMap" MapClicked="OnMapClicked" />
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                              IsVisible="{Binding IsLoading}"
+                              VerticalOptions="Center"
+                              HorizontalOptions="Center"
+                              Color="{StaticResource Green}" />
+
+            <Border BackgroundColor="White"
+                    StrokeThickness="0"
+                    Margin="10"
+                    Padding="20"
+                    IsVisible="{Binding IsSearchFilterVisible}"
+                    VerticalOptions="Start"
+                    HorizontalOptions="Fill">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                    <Button Grid.Row="0" Text="✕" FontSize="20" TextColor="Gray" BackgroundColor="Transparent" 
+                            Command="{Binding CloseSearchFilterCommand}" HorizontalOptions="End" WidthRequest="30" HeightRequest="30" Padding="0" />
+
+                    <Border Grid.Row="1" StrokeThickness="1" Stroke="{StaticResource Green}" BackgroundColor="White" Margin="0,10,0,15">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding SearchText}" Placeholder="Searching anything?" BackgroundColor="Transparent" Margin="10,0" />
+                    </Border>
+
+                    <VerticalStackLayout Grid.Row="2" Spacing="10" Margin="0,0,0,15">
+                        <Label Text="Filter by Type:" FontSize="14" FontAttributes="Bold" TextColor="Black" />
+
+                        <FlexLayout Wrap="Wrap" JustifyContent="Start" Direction="Row">
+
+                            <Border StrokeThickness="1" Padding="12,6" Margin="0,0,8,8">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleFilterCommand}" CommandParameter="Farmers Market"/>
+                                </Border.GestureRecognizers>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsFarmersMarketFilter}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Green}"/>
+                                        <Setter Property="Stroke" Value="{StaticResource Green}"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsFarmersMarketFilter}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="White"/>
+                                        <Setter Property="Stroke" Value="Gray"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Label Text="Farmers Market" FontSize="12" FontAttributes="Bold">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsFarmersMarketFilter}" Value="True">
+                                            <Setter Property="TextColor" Value="White"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsFarmersMarketFilter}" Value="False">
+                                            <Setter Property="TextColor" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+
+                            <Border StrokeThickness="1" Padding="12,6" Margin="0,0,8,8">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleFilterCommand}" CommandParameter="Organic Store"/>
+                                </Border.GestureRecognizers>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsOrganicStoreFilter}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Green}"/>
+                                        <Setter Property="Stroke" Value="{StaticResource Green}"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsOrganicStoreFilter}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="White"/>
+                                        <Setter Property="Stroke" Value="Gray"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Label Text="Organic Store" FontSize="12" FontAttributes="Bold">
+                                     <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsOrganicStoreFilter}" Value="True">
+                                            <Setter Property="TextColor" Value="White"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsOrganicStoreFilter}" Value="False">
+                                            <Setter Property="TextColor" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+
+                            <Border StrokeThickness="1" Padding="12,6" Margin="0,0,8,8">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleFilterCommand}" CommandParameter="Roadside Stall"/>
+                                </Border.GestureRecognizers>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsRoadsideStallFilter}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Green}"/>
+                                        <Setter Property="Stroke" Value="{StaticResource Green}"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsRoadsideStallFilter}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="White"/>
+                                        <Setter Property="Stroke" Value="Gray"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Label Text="Roadside Stall" FontSize="12" FontAttributes="Bold">
+                                     <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsRoadsideStallFilter}" Value="True">
+                                            <Setter Property="TextColor" Value="White"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsRoadsideStallFilter}" Value="False">
+                                            <Setter Property="TextColor" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+
+                            <Border StrokeThickness="1" Padding="12,6" Margin="0,0,8,8">
+                                <Border.StrokeShape><RoundRectangle CornerRadius="20"/></Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleFilterCommand}" CommandParameter="Supermarket Section"/>
+                                </Border.GestureRecognizers>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSupermarketFilter}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Green}"/>
+                                        <Setter Property="Stroke" Value="{StaticResource Green}"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSupermarketFilter}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="White"/>
+                                        <Setter Property="Stroke" Value="Gray"/>
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Label Text="Supermarket" FontSize="12" FontAttributes="Bold">
+                                     <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsSupermarketFilter}" Value="True">
+                                            <Setter Property="TextColor" Value="White"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsSupermarketFilter}" Value="False">
+                                            <Setter Property="TextColor" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+
+                        </FlexLayout>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Row="3" Spacing="15">
+                        <Button Text="📄+ My Submissions" Command="{Binding NavigateToSubmissionsCommand}" BackgroundColor="Transparent" TextColor="{StaticResource Green}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Start" Padding="0" HeightRequest="50" />
+                        <Button Text="📍+ Add Location" Command="{Binding NavigateToAddLocationCommand}" BackgroundColor="Transparent" TextColor="{StaticResource Green}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Start" Padding="0" HeightRequest="50" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <Border BackgroundColor="White"
+                    StrokeThickness="0"
+                    Margin="10"
+                    Padding="0"
+                    IsVisible="{Binding IsMarketDetailsVisible}"
+                    VerticalOptions="End"
+                    HorizontalOptions="Fill">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+                    <Button Grid.Row="0" Text="✕" FontSize="20" TextColor="Gray" BackgroundColor="Transparent" 
+                            Command="{Binding CloseMarketDetailsCommand}" HorizontalOptions="End" WidthRequest="30" HeightRequest="30" Padding="0" Margin="10" />
+
+                    <Grid Grid.Row="1" HeightRequest="200" Margin="0,0,0,15">
+
+                        <Border BackgroundColor="#E0E0E0" StrokeThickness="0">
+
+                            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                                <Label Text="📷" 
+                                    FontSize="40" 
+                                    TextColor="Gray" 
+                                    HorizontalOptions="Center" />
+
+                                <Label Text="No photo attached" 
+                                       FontSize="14" 
+                                       TextColor="Gray" 
+                                       HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                            
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding SelectedMarket.PhotoUrl}" Value="{x:Null}">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Border" Binding="{Binding SelectedMarket.PhotoUrl}" Value="">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                        </Border>
+
+                        <Image Aspect="AspectFill" 
+                               HeightRequest="200" 
+                               HorizontalOptions="Fill"
+                               BackgroundColor="#F5F5F5">
+
+                            <Image.Source>
+                                <UriImageSource Uri="{Binding SelectedMarket.PhotoUrl}" 
+                                                CachingEnabled="True" 
+                                                CacheValidity="1:00:00:00" />
+                            </Image.Source>
+
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding SelectedMarket.PhotoUrl}" Value="{x:Null}">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding SelectedMarket.PhotoUrl}" Value="">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                            </Image.Triggers>
+                        </Image>
+                    </Grid>
+
+                    <ScrollView Grid.Row="2" Margin="20,0,20,10">
+                        <VerticalStackLayout Spacing="12">
+
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Market Name" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                <Label Text="{Binding SelectedMarket.Name}" FontSize="20" FontAttributes="Bold" TextColor="#2E7D32" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Type" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                <Border BackgroundColor="#E8F5E9" StrokeThickness="0" HorizontalOptions="Start" Padding="10,4">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="8"/>
+                                    </Border.StrokeShape>
+                                    <Label Text="{Binding SelectedMarket.Type}" FontSize="14" TextColor="#2E7D32" FontAttributes="Bold"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Address" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                <Label Text="{Binding SelectedMarket.Address}" FontSize="14" TextColor="Black" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Opening Hours" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                <Label Text="{Binding SelectedMarket.OpeningHours}" FontSize="14" TextColor="Black" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Description / Products" FontSize="12" FontAttributes="Bold" TextColor="Gray" />
+                                <Label Text="{Binding SelectedMarket.Description}" FontSize="14" TextColor="Black" />
+                            </VerticalStackLayout>
+
+                            <Button Grid.Row="3" Text="🚗 Take Me There" Command="{Binding NavigateToMarketCommand}" BackgroundColor="#2196F3" TextColor="White" FontSize="16" FontAttributes="Bold" CornerRadius="10" HeightRequest="45" Margin="20,10,20,20" />
+
+                            <Button Grid.Row="3" Text="Report / Submit a change" Command="{Binding ReportMarketCommand}" BackgroundColor="#D32F2F" TextColor="White" FontSize="14" FontAttributes="Bold" CornerRadius="10" HeightRequest="45" Margin="20,10,20,20" />
+
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Grid>
+            </Border>
+
+            <Border BackgroundColor="White" StrokeThickness="0" Margin="10,30,10,10" Padding="15" IsVisible="{Binding IsAddMerchantVisible}" VerticalOptions="Fill" HorizontalOptions="Fill">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto, *">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                        <Label Text="Submit a New Market" FontSize="18" FontAttributes="Bold" TextColor="#2E7D32" VerticalOptions="Center"/>
+                        <Button Grid.Column="1" Text="✕" FontSize="20" TextColor="Gray" BackgroundColor="Transparent" Command="{Binding CloseAddMerchantCommand}" WidthRequest="60" HeightRequest="60" Margin="0,0,10,0"/>
+                    </Grid>
+                    <ScrollView Grid.Row="1">
+                        <VerticalStackLayout Spacing="12" Padding="0,0,0,20">
+                            <Entry Text="{Binding NewMarketName}" Placeholder="Market Name *" />
+                            <Entry Text="{Binding NewMarketDetails}" Placeholder="Description" />
+                            <Entry Text="{Binding Address}" Placeholder="Address *" />
+                            <Picker Title="Market Type *" ItemsSource="{Binding MarketTypes}" SelectedItem="{Binding SelectedMarketType}" TextColor="Black" TitleColor="Gray"/>
+                            <Entry Text="{Binding OpeningHours}" Placeholder="Opening Hours (e.g., Mon-Fri)" />
+                            <Button Text="📍 Get Current Location" Command="{Binding GetCurrentLocationCommand}" BackgroundColor="#4CAF50" TextColor="White" CornerRadius="8" HeightRequest="45"/>
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="{Binding CurrentLocation.Latitude, StringFormat='Lat: {0:F4}'}" TextColor="Gray" FontSize="12"/>
+                                <Label Text="{Binding CurrentLocation.Longitude, StringFormat='Lng: {0:F4}'}" TextColor="Gray" FontSize="12"/>
+                            </HorizontalStackLayout>
+                            <Button Text="📷 Pick Photo" Command="{Binding PickPhotoCommand}" BackgroundColor="#2196F3" TextColor="White" CornerRadius="8" HeightRequest="45"/>
+                            <Image Source="{Binding PhotoPath}" HeightRequest="150" Aspect="AspectFit" BackgroundColor="#F5F5F5">
+                                <Image.Triggers>
+                                    <DataTrigger TargetType="Image" Binding="{Binding PhotoPath}" Value="{x:Null}">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Image.Triggers>
+                            </Image>
+                            <Button Text="Submit Market" Command="{Binding SubmitNewMarketCommand}" BackgroundColor="#2E7D32" TextColor="White" FontAttributes="Bold" HeightRequest="50" CornerRadius="10" Margin="0,10,0,0"/>
+                            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Color="#2E7D32"/>
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Grid>
+            </Border>
+
+            <Border BackgroundColor="White"
+                    StrokeThickness="0"
+                    Margin="20,40"
+                    Padding="20"
+                    IsVisible="{Binding IsSubmissionStatusVisible}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Fill">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <Grid RowDefinitions="Auto, *">
+                    <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,15">
+                        <Label Text="My Submissions"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#2E7D32" 
+                               VerticalOptions="Center"/>
+
+                        <Button Grid.Column="1"
+                                Text="✕"
+                                FontSize="18"
+                                TextColor="Gray"
+                                BackgroundColor="#F0F0F0"
+                                CornerRadius="15"
+                                WidthRequest="40"
+                                HeightRequest="40"
+                                Padding="0"
+                                Command="{Binding CloseSubmissionStatusCommand}" />
+                    </Grid>
+
+                    <CollectionView Grid.Row="1" 
+                                    ItemsSource="{Binding UserSubmissions}"
+                                    SelectionMode="None"
+                                    HeightRequest="300">
+
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                                <Label Text="📭" FontSize="40" HorizontalOptions="Center"/>
+                                <Label Text="No submissions yet" TextColor="Gray" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:MarketSubmission">
+                                <Border StrokeThickness="1" 
+                                        BackgroundColor="White"
+                                        Padding="15"
+                                        Margin="0,5">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10" />
+                                    </Border.StrokeShape>
+
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="Pending">
+                                            <Setter Property="Stroke" Value="{StaticResource Orange}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="Approved">
+                                            <Setter Property="Stroke" Value="{StaticResource Green}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="Rejected">
+                                            <Setter Property="Stroke" Value="#D32F2F"/>
+                                        </DataTrigger>
+                                    </Border.Triggers>
+
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label Grid.Column="0" 
+                                               Text="{Binding MarketName, TargetNullValue='(No Name)'}"
+                                               FontAttributes="Bold"
+                                               TextColor="Black"
+                                               VerticalOptions="Center" />
+
+                                        <Border Grid.Column="1" 
+                                                Padding="10,5"
+                                                BackgroundColor="#F5F5F5"
+                                                StrokeThickness="0">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="5"/>
+                                            </Border.StrokeShape>
+                                            <Label Text="{Binding Status}" 
+                                                   FontSize="12" 
+                                                   TextColor="Gray"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+
+            <Border BackgroundColor="White" StrokeThickness="0" Margin="20" Padding="20" IsVisible="{Binding IsReportPopupVisible}" VerticalOptions="Center" HorizontalOptions="Fill">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,15">
+                        <Label Text="Any Changes?" FontSize="20" FontAttributes="Bold" TextColor="Black" VerticalOptions="Center"/>
+                        <Button Grid.Column="1" Text="✕" FontSize="20" TextColor="Gray" BackgroundColor="Transparent" Command="{Binding CloseReportPopupCommand}" WidthRequest="40" HeightRequest="40" Padding="0"/>
+                    </Grid>
+                    <VerticalStackLayout Grid.Row="1" Spacing="10">
+                        <Label Text="Change Details / Evidence" FontSize="14" FontAttributes="Bold" TextColor="Gray"/>
+                        <Border Stroke="Gray" StrokeThickness="1" Padding="10" BackgroundColor="#F9F9F9">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
+                            <Editor Text="{Binding ReportEvidence}" Placeholder="e.g. This shop is closed..." HeightRequest="100" AutoSize="TextChanges" TextColor="black"/>
+                        </Border>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Row="2" Spacing="10" Margin="0,15,0,0">
+                        <Button Text="📷 Add Evidence Photo" Command="{Binding PickPhotoCommand}" BackgroundColor="#2196F3" TextColor="White" CornerRadius="8" HeightRequest="40"/>
+                        <Image Source="{Binding PhotoPath}" HeightRequest="100" Aspect="AspectFit">
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding PhotoPath}" Value="{x:Null}">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                            </Image.Triggers>
+                        </Image>
+                    </VerticalStackLayout>
+                    <Button Grid.Row="3" Text="Submit to Change" Command="{Binding SubmitReportCommand}" BackgroundColor="#D32F2F" TextColor="White" FontAttributes="Bold" CornerRadius="10" HeightRequest="50" Margin="0,20,0,0"/>
+                </Grid>
+            </Border>
+
+            <Button Text="🔍 Menu"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    BackgroundColor="{StaticResource Green}"
+                    TextColor="White"
+                    Command="{Binding ToggleSearchFilterCommand}"
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    Padding="20,0"
+                    VerticalOptions="End"
+                    HorizontalOptions="Start"
+                    Margin="20"
+                    IsVisible="{Binding IsAnyPopupVisible, Converter={StaticResource InverseBoolConverter}}" />
+        </Grid>
+
+        <Grid Grid.Row="2"
+              BackgroundColor="White"
+              Padding="0,10"
+              RowDefinitions="Auto">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <VerticalStackLayout Grid.Column="0" Spacing="5" Padding="10" Margin="10,0,5,0" HorizontalOptions="Center" BackgroundColor="Transparent">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToHomeCommand}" />
+                </VerticalStackLayout.GestureRecognizers>
+                <Label Text="🏠" FontSize="24" HorizontalOptions="Center" />
+                <Label Text="Home" FontSize="12" TextColor="Gray" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <Border Grid.Column="1" BackgroundColor="#E8F5E9" StrokeThickness="0" Margin="5,0,10,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="5" Padding="10" HorizontalOptions="Center">
+                    <Label Text="🗺️" FontSize="24" HorizontalOptions="Center" />
+                    <Label Text="Map" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource Green}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

@@ -60,4 +60,8 @@
 		</Compile>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Web_admin\" />
+	</ItemGroup>
+
 </Project>

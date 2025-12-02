@@ -263,7 +263,11 @@ public partial class MapViewModel : ObservableObject, IQueryAttributable
                 PhotoPath = photo.FullPath;
             }
         }
-        catch { }
+        catch ( Exception ex )
+        {
+            await Shell.Current.DisplayAlert("Photo Error", ex.Message, "OK");
+        
+        }
     }
 
     [RelayCommand]

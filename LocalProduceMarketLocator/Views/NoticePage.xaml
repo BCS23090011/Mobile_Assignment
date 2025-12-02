@@ -9,76 +9,88 @@
              BackgroundColor="White"
              Shell.NavBarIsVisible="True">
 
-    <Grid>
+    <VerticalStackLayout>
+
+        <!-- ⭐ 这个就是你的清除按钮 -->
+        <Button 
+        Text="Clear Read Messages"
+        TextColor="White"
+        Margin="10,10,10,0"
+        Command="{Binding ClearReadNotificationsCommand}" 
+        BackgroundColor="DarkGreen"/>
+
         <RefreshView IsRefreshing="{Binding IsLoading}"
-                     Command="{Binding LoadProfileCommand}">
+                 Command="{Binding LoadProfileCommand}">
 
             <CollectionView ItemsSource="{Binding Notifications}"
-                            SelectionMode="None"
-                            Margin="10">
+                        SelectionMode="None"
+                        Margin="10">
 
                 <CollectionView.EmptyView>
                     <VerticalStackLayout VerticalOptions="Center" 
-                                         HorizontalOptions="Center"
-                                         Spacing="10"
-                                         Margin="0,100,0,0">
+                                     HorizontalOptions="Center"
+                                     Spacing="10"
+                                     Margin="0,100,0,0">
                         <Label Text="📭" FontSize="60" HorizontalOptions="Center"/>
                         <Label Text="No notifications yet" 
-                               FontSize="18" 
-                               TextColor="Gray" 
-                               HorizontalOptions="Center"/>
+                           FontSize="18" 
+                           TextColor="Gray" 
+                           HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:NotificationMessage">
                         <Border StrokeThickness="0"
-                                BackgroundColor="#F5F5F5"
-                                Margin="0,5"
-                                Padding="15">
+                            BackgroundColor="#F5F5F5"
+                            Margin="0,5"
+                            Padding="15">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="10" />
                             </Border.StrokeShape>
 
                             <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
                                 <Label Grid.Row="0" Grid.Column="0"
-                                       Text="{Binding Title}"
-                                       FontAttributes="Bold"
-                                       FontSize="16"
-                                       TextColor="Black" />
+                                   Text="{Binding Title}"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="Black" />
 
                                 <Label Grid.Row="0" Grid.Column="1"
-                                       Text="{Binding CreatedAt, StringFormat='{0:MM/dd HH:mm}'}"
-                                       FontSize="12"
-                                       TextColor="Gray"
-                                       HorizontalOptions="End"/>
+                                   Text="{Binding CreatedAt, StringFormat='{0:MM/dd HH:mm}'}"
+                                   FontSize="12"
+                                   TextColor="Gray"
+                                   HorizontalOptions="End"/>
 
                                 <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                       Text="{Binding Body}"
-                                       FontSize="14"
-                                       TextColor="#424242"
-                                       Margin="0,5,0,0" />
+                                   Text="{Binding Body}"
+                                   FontSize="14"
+                                   TextColor="#424242"
+                                   Margin="0,5,0,0" />
 
                                 <BoxView Grid.Row="0" Grid.Column="1"
-                                         Color="Red"
-                                         HeightRequest="8"
-                                         WidthRequest="8"
-                                         CornerRadius="4"
-                                         HorizontalOptions="Start"
-                                         VerticalOptions="Start"
-                                         Margin="-10,0,0,0"
-                                         IsVisible="{Binding IsRead, Converter={StaticResource InverseBoolConverter}}" />
+                                     Color="Red"
+                                     HeightRequest="8"
+                                     WidthRequest="8"
+                                     CornerRadius="4"
+                                     HorizontalOptions="Start"
+                                     VerticalOptions="Start"
+                                     Margin="-10,0,0,0"
+                                     IsVisible="{Binding IsRead, Converter={StaticResource InverseBoolConverter}}" />
                             </Grid>
 
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:NoticeViewModel}}, Path=MarkNotificationAsReadCommand}"
-                                                      CommandParameter="{Binding .}" />
+                                                  CommandParameter="{Binding .}" />
                             </Border.GestureRecognizers>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+
             </CollectionView>
         </RefreshView>
-    </Grid>
+
+    </VerticalStackLayout>
+
 
 </ContentPage>

@@ -122,4 +122,12 @@ public partial class NoticeViewModel : ObservableObject
             System.Diagnostics.Debug.WriteLine($"Mark Read Error: {ex.Message}");
         }
     }
+
+    [RelayCommand]
+    private void ClearReadNotifications()
+    {
+        // 过滤掉已读的，只保留未读
+        Notifications = Notifications.Where(n => !n.IsRead).ToList();
+    }
+
 }

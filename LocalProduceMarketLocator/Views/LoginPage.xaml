@@ -14,7 +14,7 @@
                                VerticalOptions="Center">
 
             <!-- Logo - Location Pin with Leaf -->
-            <Image Source="appicon.png"
+            <Image Source="icon.png"
                    WidthRequest="120"
                    HeightRequest="120"
                    HorizontalOptions="Center"

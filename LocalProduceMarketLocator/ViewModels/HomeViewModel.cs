@@ -2,6 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using LocalProduceMarketLocator.Services;
 using LocalProduceMarketLocator.Views;
+using Microsoft.Maui.ApplicationModel.Communication;
+using Microsoft.Maui.ApplicationModel;
+using System.Diagnostics;
 
 namespace LocalProduceMarketLocator.ViewModels;
 
@@ -96,6 +99,94 @@ public partial class HomeViewModel : ObservableObject
     }
 
     // --- 其他原有功能 (保持不变) ---
+
+    [RelayCommand]
+    private async Task NavigateToContactUsAsync()
+    {
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        {
+            await Shell.Current.DisplayAlert("Offline", "Please connect to the internet to send an email.", "OK");
+            return;
+        }
+
+        string recipient = "support@sustainmarket.com";
+        string subject = $"Support Request - Sustain Market App (User: {UserName})";
+        string body =
+            "Hi Sustain Market Support Team,\n\n" +
+            "Issue description:\n\n" +
+            "Steps to reproduce:\n\n" +
+            "Device model:\n" +
+            "Android/iOS version:\n\n" +
+            "Thanks,\n";
+
+        try
+        {
+            // 1) 首选：用 MAUI Email API（会打开已安装的邮件客户端）
+            try
+            {
+                var message = new EmailMessage
+                {
+                    Subject = subject,
+                    Body = body,
+                    To = new List<string> { recipient }
+                };
+
+                Debug.WriteLine("Trying Email.Default.ComposeAsync...");
+                await Email.Default.ComposeAsync(message);
+                Debug.WriteLine("Email.Default.ComposeAsync returned.");
+                return;
+            }
+            catch (FeatureNotSupportedException fnsex)
+            {
+                // 平台或设备不支持
+                Debug.WriteLine($"Email.ComposeAsync FeatureNotSupported: {fnsex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Email.ComposeAsync threw: {ex.Message}");
+            }
+
+            // 2) 备用：简单 mailto:（只带收件人和主题，避免复杂的换行/字符问题）
+            string simpleMailto = $"mailto:{recipient}?subject={Uri.EscapeDataString(subject)}";
+            Debug.WriteLine($"Trying Launcher.CanOpenAsync with: {simpleMailto}");
+            bool canOpen = false;
+            try
+            {
+                canOpen = await Launcher.Default.CanOpenAsync(simpleMailto);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"CanOpenAsync threw: {ex.Message}");
+            }
+
+            Debug.WriteLine($"CanOpenAsync returned: {canOpen}");
+            if (canOpen)
+            {
+                try
+                {
+                    await Launcher.Default.OpenAsync(simpleMailto);
+                    Debug.WriteLine("Launcher.OpenAsync(mailto) called.");
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Launcher.OpenAsync threw: {ex.Message}");
+                }
+            }
+
+            // 3) 全部失败 -> 提示用户并显示 fallback 信息以便复制
+            await Shell.Current.DisplayAlert(
+                "No Mail App",
+                $"No email application was found or could be opened on this device.\n\nPlease send your message to: {recipient}\n\nSubject: {subject}",
+                "OK");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Unexpected error in NavigateToContactUsAsync: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error", "Unable to open your email app. Please ensure a mail app is installed.", "OK");
+        }
+    }
+
 
     public async Task CheckUnreadNotificationsAsync()
     {

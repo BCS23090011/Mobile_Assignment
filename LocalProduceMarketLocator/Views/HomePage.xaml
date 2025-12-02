@@ -88,8 +88,15 @@
                             <Label Grid.Column="1" Text="View Map" TextColor="{StaticResource Green}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"/>
                         </Grid>
                     </Border>
+ 
+                    <VerticalStackLayout Spacing="15" Margin="0,20,0,0"> 
 
-                    <VerticalStackLayout Spacing="15" Margin="0,20,0,0">
+                        <Button Text="Contact Us"
+                         Command="{Binding NavigateToContactUsCommand}"
+                         BackgroundColor="{StaticResource Gray500}"
+                         TextColor="White"
+                         FontSize="18" FontAttributes="Bold" CornerRadius="15" HeightRequest="60"
+                         IsVisible="True" />
 
                         <Button Text="Logout"
                                 Command="{Binding LogoutCommand}"

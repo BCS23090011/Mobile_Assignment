@@ -14,7 +14,7 @@
                                VerticalOptions="Center">
 
             <!-- Logo - Location Pin with Leaf -->
-            <Image Source="icon.png"
+            <Image Source="logo.png"
                    WidthRequest="120"
                    HeightRequest="120"
                    HorizontalOptions="Center"

@@ -74,6 +74,21 @@
                                        Margin="10,0" />
                         </Border>
                     </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                    </VerticalStackLayout>
+
+                    <Label Text="Forgot Password?"
+                        FontSize="14"
+                        TextColor="{StaticResource Green}"
+                        FontAttributes="Bold"
+                        HorizontalOptions="End"
+                        Margin="0,5,10,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                    
                 </VerticalStackLayout>
             </Border>
 

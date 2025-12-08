@@ -12,6 +12,7 @@ public class AuthService : IAuthService
 
     // 1. 填入你截图里的真实 API Key
     private const string FirebaseApiKey = "AIzaSyDLySSqZ8kjuH_5gIl6uEmSCklqQCMdNjE";
+    private const string PasswordResetUrl = "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=";
 
     // Firebase 身份验证的标准接口地址
     private const string SignUpUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=";
@@ -124,6 +125,40 @@ public class AuthService : IAuthService
         {
             System.Diagnostics.Debug.WriteLine($"Login Error: {ex.Message}");
             return null;
+        }
+    }
+
+    // 👇 2. 实现重置密码的方法
+    public async Task<bool> ResetPasswordAsync(string email)
+    {
+        try
+        {
+            // 构建 Firebase 需要的 Payload
+            // requestType 必须是 "PASSWORD_RESET"
+            var payload = new
+            {
+                requestType = "PASSWORD_RESET",
+                email = email
+            };
+
+            // 发送请求
+            var response = await _httpClient.PostAsJsonAsync($"{PasswordResetUrl}{FirebaseApiKey}", payload);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                var errorJson = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"🔥 重置密码失败: {errorJson}");
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Reset Password Error: {ex.Message}");
+            return false;
         }
     }
 

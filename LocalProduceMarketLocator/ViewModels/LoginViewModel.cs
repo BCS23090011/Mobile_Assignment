@@ -30,6 +30,36 @@ public partial class LoginViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task ForgotPasswordAsync()
+    {
+        // 1. 弹窗让用户输入邮箱 (如果登录框已经填了，可以预设进去)
+        string result = await Shell.Current.DisplayPromptAsync("Reset Password",
+                                                             "Enter your email address to receive a reset link:",
+                                                             initialValue: Email, // 如果用户已经在登录框输了，直接带过来
+                                                             accept: "Send Link",
+                                                             cancel: "Cancel");
+
+        // 如果用户点了取消或没填内容
+        if (string.IsNullOrWhiteSpace(result)) return;
+
+        IsLoading = true;
+
+        // 2. 调用 Service 发送邮件
+        bool sent = await _authService.ResetPasswordAsync(result);
+
+        IsLoading = false;
+
+        if (sent)
+        {
+            await Shell.Current.DisplayAlert("Success", $"A password reset link has been sent to {result}. Please check your email (and spam folder).", "OK");
+        }
+        else
+        {
+            await Shell.Current.DisplayAlert("Error", "Failed to send reset email. Please check if the email format is correct or if the account exists.", "OK");
+        }
+    }
+
+    [RelayCommand]
     private async Task LoginAsync()
     {
         ErrorMessage = string.Empty;

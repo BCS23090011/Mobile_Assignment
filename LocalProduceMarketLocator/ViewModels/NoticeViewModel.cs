@@ -54,7 +54,6 @@ public partial class NoticeViewModel : ObservableObject
                 foreach (var cloudNote in allCloudNotes)
                 {
                     // 🔥🔥🔥 修改点 1：解决“没有东西显示”的问题 🔥🔥🔥
-                    // 不管是 Broadcast 还是普通私信，只要是现在拉下来的，都强制归属给当前用户
                     // 这样存入 SQLite 后，GetNotificationsAsync 才能查到它们
                     cloudNote.UserId = CurrentUser.Id;
 
@@ -69,7 +68,6 @@ public partial class NoticeViewModel : ObservableObject
                 Notifications = finalNotifications.Where(n => !n.IsRead).OrderByDescending(n => n.CreatedAt).ToList();
 
                 // 🔥🔥🔥 修改点 2：解决“点进去就自动变成已读”的问题 🔥🔥🔥
-                // 我已经把那段 "if (unreadNotifications.Any()) { foreach... }" 的代码**删掉了**。
                 // 现在的逻辑是：除非你点击消息，或者点击全部清除，否则它们永远保持未读状态。
             }
         }

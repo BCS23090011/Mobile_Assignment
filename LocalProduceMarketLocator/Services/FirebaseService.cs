@@ -17,10 +17,7 @@ public class FirebaseService : IFirebaseService
     private const string StorageBucket = "mobile-44ff2.firebasestorage.app"; // 你的 Bucket
     private const string FirebaseStorageBaseUrl = $"https://firebasestorage.googleapis.com/v0/b/{StorageBucket}/o";
 
-    // 👇👇👇 【请在这里填入 Realtime Database URL】 👇👇👇
-    // 1. 去 Firebase Console -> Build -> Realtime Database
-    // 2. 复制最上面的那个链接 (以 https:// 开头, 以 / 结尾)
-    // 注意：不是 console 的网址，是数据视图上方的那个链接
+
     private const string FirebaseDatabaseUrl = "https://mobile-44ff2-default-rtdb.firebaseio.com/";
 
     public async Task<List<MarketSubmission>> GetAllSubmissionsFromCloudAsync()
@@ -111,7 +108,6 @@ public class FirebaseService : IFirebaseService
         }
     }
 
-    // ✅ 真正的 Firebase Storage 上传逻辑 (REST API)
     public async Task<string> UploadImageAsync(FileResult imageFile)
     {
         try
@@ -212,7 +208,6 @@ public class FirebaseService : IFirebaseService
             var response = await _httpClient.GetFromJsonAsync<Dictionary<string, Market>>($"{FirebaseDatabaseUrl}markets.json");
             if (response == null) return new List<Market>();
 
-            // 🔥🔥🔥 【核心修改】去掉 .Where(Status == "Approved")
             // 我们需要知道哪些被 Rejected 了，所以必须全部拉下来
             var allMarkets = response.Values.ToList();
 
@@ -232,11 +227,9 @@ public class FirebaseService : IFirebaseService
         {
             if (string.IsNullOrEmpty(userId)) return new List<NotificationMessage>();
 
-            // 对应 Python: f"{FIREBASE_URL}notifications/{user_id}.json"
             // 注意：这里我们只读取属于当前登录用户的通知
             var url = $"{FirebaseDatabaseUrl}notifications/{userId}.json";
 
-            // 因为 Python 那边是用 POST (Push) 写入的，Firebase 会生成随机 Key
             // 所以返回的数据结构是 Dictionary<string, NotificationMessage>
             var response = await _httpClient.GetFromJsonAsync<Dictionary<string, NotificationMessage>>(url);
 
